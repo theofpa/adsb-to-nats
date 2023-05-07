@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adsb-to-nats
+  namespace: default
+  labels:
+    app: adsbtonats
+spec:
+  selector:
+    matchLabels:
+      app: adsbtonats
+  template:
+    metadata:
+      labels:
+        app: adsbtonats
+    spec:
+      containers:
+        - name: adsb-to-nats
+          image: ko://github.com/theofpa/adsb-to-nats
+          env:
+            - name: ADS_B_SERVER
+              value: 192.168.86.110
+            - name: NATS_SERVER
+              value: nats
