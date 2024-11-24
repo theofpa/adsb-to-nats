@@ -19,6 +19,6 @@ spec:
           image: ko://github.com/theofpa/adsb-to-nats
           env:
             - name: ADS_B_SERVER
-              value: 192.168.86.110
+              value: 192.168.1.110
             - name: NATS_SERVER
               value: nats
