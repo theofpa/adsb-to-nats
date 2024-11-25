@@ -3,7 +3,8 @@ package main
 import (
 	"bufio"
 	"fmt"
-	nats "github.com/nats-io/nats.go"
+	"github.com/nats-io/nats.go"
+	"log"
 	"net"
 	"os"
 )
@@ -25,13 +26,21 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer conn.Close()
+
+	defer func() {
+		if err := conn.Close(); err != nil {
+			log.Printf("Error closing PostgreSQL connection: %v", err)
+		}
+	}()
 
 	// Read messages from the ADS-B server and publish them to NATS
 	scanner := bufio.NewScanner(conn)
 	for scanner.Scan() {
 		msg := scanner.Text()
 		fmt.Println(msg) // For debugging purposes only
-		nc.Publish("adsb", []byte(msg))
+
+		if err := nc.Publish("adsb", []byte(msg)); err != nil {
+			log.Printf("Error publishing message: %v", err)
+		}
 	}
 }
